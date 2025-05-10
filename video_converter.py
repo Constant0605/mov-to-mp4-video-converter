@@ -11,26 +11,20 @@ class VideoConverter:
         self.window.title("Video Converter")
         self.window.geometry("600x400")
         self.window.resizable(False, False)
-        
-        # Configure theme
+
+        # the theme
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
-        
-        # Set FFmpeg path
         self.ffmpeg_path = r"C:\ffmpeg\bin\ffmpeg.exe"  # Update this path to match your FFmpeg installation
-        
         self.setup_ui()
         
     def setup_ui(self):
-        # Title
         title_label = ctk.CTkLabel(
             self.window,
             text="MOV to MKV/MP4 Converter",
             font=("Helvetica", 24, "bold")
         )
         title_label.pack(pady=20)
-        
-        # Input file selection
         self.input_frame = ctk.CTkFrame(self.window)
         self.input_frame.pack(pady=10, padx=20, fill="x")
         
@@ -47,8 +41,6 @@ class VideoConverter:
             command=self.browse_file
         )
         self.browse_button.pack(side="right", padx=10)
-        
-        # Output format selection
         self.format_frame = ctk.CTkFrame(self.window)
         self.format_frame.pack(pady=10, padx=20, fill="x")
         
@@ -75,21 +67,16 @@ class VideoConverter:
             value="mkv"
         )
         self.mkv_radio.pack(side="left", padx=10)
-        
-        # Progress bar
         self.progress_bar = ctk.CTkProgressBar(self.window)
         self.progress_bar.pack(pady=20, padx=20, fill="x")
         self.progress_bar.set(0)
-        
-        # Status label
+
         self.status_label = ctk.CTkLabel(
             self.window,
             text="Ready to convert",
             font=("Helvetica", 12)
         )
         self.status_label.pack(pady=10)
-        
-        # Convert button
         self.convert_button = ctk.CTkButton(
             self.window,
             text="Convert",
@@ -111,8 +98,6 @@ class VideoConverter:
         try:
             output_format = self.format_var.get()
             output_file = os.path.splitext(self.input_file)[0] + f".{output_format}"
-            
-            # Use subprocess to run FFmpeg with full path and specific codecs
             command = [
                 self.ffmpeg_path,
                 '-i', self.input_file,
@@ -123,8 +108,6 @@ class VideoConverter:
                 '-b:a', '192k',  # Audio bitrate (320k is the best quality)
                 output_file
             ]
-            
-            # Run FFmpeg
             process = subprocess.Popen(
                 command,
                 stdout=subprocess.PIPE,
@@ -153,8 +136,6 @@ class VideoConverter:
         self.convert_button.configure(state="disabled")
         self.status_label.configure(text="Converting...")
         self.progress_bar.set(0.5)
-        
-        # Start conversion in a separate thread
         thread = threading.Thread(target=self.convert_video)
         thread.daemon = True
         thread.start()
